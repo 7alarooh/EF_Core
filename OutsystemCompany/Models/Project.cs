@@ -24,5 +24,7 @@ namespace OutsystemCompany.Models
         public int Dnum { get; set; }
         public virtual Department Department { get; set; }
 
+        public virtual ICollection<Works_On> WorksOnEmployees { get; set; } = new List<Works_On>();
+
     }
 }

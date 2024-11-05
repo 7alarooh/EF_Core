@@ -28,20 +28,16 @@ namespace OutsystemCompany.Models
 
         [InverseProperty("Department")]
         public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<Project> Projects { get; set; } = new List<Project>();
 
 
         // Implement IValidatableObject to add complex validation logic
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            // Additional validations can be performed here
-            // Example: Ensure the manager's SSN is valid if it is set
-            if (MgrSsn <= 0)
+        { if (MgrSsn <= 0)
             {
                 yield return new ValidationResult("Manager's SSN must be a positive value.", new[] { nameof(MgrSsn) });
             }
-
-            // Example: Ensure the start date is not in the future
-            if (MgrStartDate > DateTime.Now)
+          if (MgrStartDate > DateTime.Now)
             {
                 yield return new ValidationResult("Manager start date cannot be in the future.", new[] { nameof(MgrStartDate) });
             }

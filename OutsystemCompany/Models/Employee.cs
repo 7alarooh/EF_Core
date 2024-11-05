@@ -37,9 +37,14 @@ namespace OutsystemCompany.Models
         [ForeignKey("Supervisor")]
         public int? Super_Ssn  { get; set; }
         public virtual Employee Supervisor { get; set; }
+        [ForeignKey("Department")]
+        public int Dno { get; set; }
+        public virtual Department Department { get; set; }
 
         [InverseProperty("Supervisor")]
         public virtual ICollection<Employee> Supervisees { get; set; }
+
+        public virtual ICollection<Works_On> WorksOnProjects   {get; set;}
 
 
         // Implement IValidatableObject to add complex validation logic
