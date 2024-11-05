@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,13 @@ namespace OutsystemCompany.Models
         public Gender Sex { get; set; }
         [Range(0, double.MaxValue, ErrorMessage = "Salary must be a positive value.")]
         public double Salary { get; set; }
-        public int Super_Ssn { get; set; }
+        [ForeignKey("Supervisor")]
+        public int? Super_Ssn  { get; set; }
+        public virtual Employee Supervisor { get; set; }
+
+        [InverseProperty("Supervisor")]
+        public virtual ICollection<Employee> Supervisees { get; set; }
+
 
         // Implement IValidatableObject to add complex validation logic
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
