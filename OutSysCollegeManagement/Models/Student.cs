@@ -56,7 +56,8 @@ namespace OutSysCollegeManagement.Models
         //Student State in College
         [Required(ErrorMessage = "Status is required.")]
         public StudentStatus State { get; set; }= StudentStatus.Active;
-
+        // Navigation property for the many-to-many relationship
+        public virtual ICollection<Course> Courses { get; set; }
         //----------------------------------------------------------------//
 
         public static ValidationResult ValidateDOB(DateTime dob, ValidationContext context)
