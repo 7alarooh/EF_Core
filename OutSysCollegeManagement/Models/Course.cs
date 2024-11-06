@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,13 @@ namespace OutSysCollegeManagement.Models
         [Required(ErrorMessage = "Date of Beginning is required.")]
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
+        // Foreign key for Department
+        [Required]
+        [ForeignKey("Department")]
+        public int Department_id { get; set; }
+
+        // Navigation property for Department
+        public virtual Department Department { get; set; }
 
         //Navigation
         public virtual ICollection<Student> Students { get; set; }
