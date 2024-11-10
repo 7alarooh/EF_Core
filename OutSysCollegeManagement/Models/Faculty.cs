@@ -31,5 +31,6 @@ namespace OutSysCollegeManagement.Models
         public virtual List<Course> Courses { get; set; } // Add this line
 
         public virtual List<Subject> Subjects { get; set; }
+        public virtual List<Faculty_Phone> Faculty_Phones { get; set; }
     }
 }

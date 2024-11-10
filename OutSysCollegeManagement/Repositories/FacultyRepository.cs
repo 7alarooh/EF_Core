@@ -66,6 +66,14 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(f => f.Courses)
                 .ToListAsync();
         }
+        // GetFacultyByMobileNumber: Search for faculty members by their mobile number
+        public async Task<Faculty> GetFacultyByMobileNumber(string mobileNumber)
+        {
+            return await _context.Faculty_Phone
+                .Where(fp => fp.Phone_no == mobileNumber)
+                .Select(fp => fp.Faculty)
+                .FirstOrDefaultAsync();
+        }
 
     }
 }

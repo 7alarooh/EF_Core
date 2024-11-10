@@ -9,15 +9,10 @@ using System.Threading.Tasks;
 
 namespace OutSysCollegeManagement.Models
 {
-    
-    [PrimaryKey(nameof(SID), nameof(Mobile_no),nameof(Fid))]
+
+    [PrimaryKey(nameof(Fid), nameof(Phone_no))]
     public class Faculty_Phone
     {
-        //student id
-        [ForeignKey("Student")]  
-        public int SID { get; set; }
-        public virtual Student Student { get; set; } // Navigation 
-
         //Faculty id
         [ForeignKey("Faculty")]
         public int Fid { get; set; }
@@ -27,6 +22,6 @@ namespace OutSysCollegeManagement.Models
         [Required(ErrorMessage = "Mobile number is required.")]
         [StringLength(15, ErrorMessage = "Mobile number cannot exceed 15 characters.")]
         [RegularExpression(@"^\d{8}$", ErrorMessage = "Mobile number must be exactly 8 digits.")]
-        public string Mobile_no { get; set; }  // Mobile number
+        public string Phone_no { get; set; }  // Mobile number
     }
 }

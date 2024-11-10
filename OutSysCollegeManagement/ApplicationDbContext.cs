@@ -19,7 +19,7 @@ namespace OutSysCollegeManagement
         public DbSet<Course>Courses { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Exams>Exams { get; set; }
-        public DbSet<Faculty_Phone> Faculty_Phones { get; set; }
+        public DbSet<Faculty_Phone> Faculty_Phone { get; set; }
         public DbSet<Hostel> Hostels { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Faculty> Faculties { get; set; }
