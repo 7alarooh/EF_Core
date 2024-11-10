@@ -25,6 +25,9 @@ namespace OutSysCollegeManagement.Models
         // Faculty salary
         [Required(ErrorMessage = "Salary is required.")]
         [Range(100, 10000, ErrorMessage = "Salary must be between 100 and 10,000.")]
-        public decimal Salary { get; set; }  
+        public decimal Salary { get; set; }
+
+        // Navigation 
+        public virtual List<Subject> Subjects { get; set; }
     }
 }
