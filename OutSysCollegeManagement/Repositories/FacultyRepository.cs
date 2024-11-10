@@ -57,5 +57,15 @@ namespace OutSysCollegeManagement.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        // GetFacultyByDepartment: List faculty members based on their department
+        public async Task<List<Faculty>> GetFacultyByDepartment(int departmentId)
+        {
+            return await _context.Faculties
+                .Where(f => f.Department_id == departmentId)
+                .Include(f => f.Subjects)
+                .Include(f => f.Courses)
+                .ToListAsync();
+        }
+
     }
 }
