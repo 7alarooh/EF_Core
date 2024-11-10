@@ -34,5 +34,7 @@ namespace OutSysCollegeManagement.Models
         public virtual Department Department { get; set; }
         //Navigation
         public virtual ICollection<Student> Students { get; set; }
+
+        public virtual Faculty Faculty { get; set; }
     }
 }

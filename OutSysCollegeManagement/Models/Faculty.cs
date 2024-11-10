@@ -28,6 +28,8 @@ namespace OutSysCollegeManagement.Models
         public decimal Salary { get; set; }
 
         // Navigation 
+        public virtual List<Course> Courses { get; set; } // Add this line
+
         public virtual List<Subject> Subjects { get; set; }
     }
 }
