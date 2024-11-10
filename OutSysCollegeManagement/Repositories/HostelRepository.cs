@@ -32,7 +32,41 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(h => h.Students)
                 .FirstOrDefaultAsync(h => h.Hostel_id == hostelId);
         }
+        
+        // AddHostel: Add a new hostel
+        public async Task AddHostel(Hostel hostel)
+        {
+            await _context.Hostels.AddAsync(hostel);
+            await _context.SaveChangesAsync();
+        }
 
+        // UpdateHostel: Modify an existing hostel's details
+        public async Task UpdateHostel(Hostel hostel)
+        {
+            _context.Hostels.Update(hostel);
+            await _context.SaveChangesAsync();
+        }
 
+        // DeleteHostel: Remove a hostel by ID and ensure no orphaned student data
+        public async Task DeleteHostel(int hostelId)
+        {
+            var hostel = await _context.Hostels
+                .Include(h => h.Students)
+                .FirstOrDefaultAsync(h => h.Hostel_id == hostelId);
+
+            if (hostel != null)
+            {
+                // Remove associated students' hostel reference if needed
+                foreach (var student in hostel.Students)
+                {
+                    student.Hostel_id = null;
+                }
+
+                _context.Hostels.Remove(hostel);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+       
     }
 }
