@@ -18,5 +18,10 @@ namespace OutSysCollegeManagement.Models
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Department name must be between 2 and 100 characters.")]
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Department name can only contain letters and spaces.")]
         public string D_name { get; set; }
+
+        // Navigation properties
+        public ICollection<Course> Courses { get; set; }   // Department handles many courses
+        public ICollection<Exams> Exams { get; set; }        // Department conducts many exams
+
     }
 }

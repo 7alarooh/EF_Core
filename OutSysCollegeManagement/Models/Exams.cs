@@ -34,6 +34,6 @@ namespace OutSysCollegeManagement.Models
         public int? Department_id { get; set; }
 
         // Navigation 
-        public virtual Department Department { get; set; }
+        public Department Department { get; set; }
     }
 }
