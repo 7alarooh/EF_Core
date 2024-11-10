@@ -40,6 +40,12 @@ namespace OutSysCollegeManagement.Repositories
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
         }
+        // UpdateStudent: Update an existing student’s information
+        public async Task UpdateStudent(Student student)
+        {
+            _context.Students.Update(student);
+            await _context.SaveChangesAsync();
+        }
 
 
     }
