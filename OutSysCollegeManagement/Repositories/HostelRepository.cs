@@ -25,6 +25,14 @@ namespace OutSysCollegeManagement.Repositories
                 .ToListAsync();
         }
 
-       
+        // GetHostelById: Fetch details of a specific hostel with associated students
+        public async Task<Hostel> GetHostelById(int hostelId)
+        {
+            return await _context.Hostels
+                .Include(h => h.Students)
+                .FirstOrDefaultAsync(h => h.Hostel_id == hostelId);
+        }
+
+
     }
 }
