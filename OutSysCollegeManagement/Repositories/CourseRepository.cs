@@ -25,5 +25,13 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(c => c.Faculty)  // Faculty handling the course
                 .ToListAsync();
         }
+        // 2. Get course details by ID, with related students and faculty details
+        public async Task<Course> GetCourseById(int courseId)
+        {
+            return await _context.Courses
+                .Include(c => c.Students) // Enrolled students
+                .Include(c => c.Faculty)  // Faculty handling the course
+                .FirstOrDefaultAsync(c => c.Course_id == courseId);
+        }
     }
 }
