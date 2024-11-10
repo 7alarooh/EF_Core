@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace OutSysCollegeManagement.Models
 {
     public class Exams
-    {
+    {// exam code
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Exam_code { get; set; }

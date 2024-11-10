@@ -11,6 +11,7 @@ namespace OutSysCollegeManagement.Models
 {
     public  class Course
     {
+        //course id 
         [Key]
         public int Course_id { get; set; }
         // course name
@@ -31,7 +32,6 @@ namespace OutSysCollegeManagement.Models
 
         // Navigation property for Department
         public virtual Department Department { get; set; }
-
         //Navigation
         public virtual ICollection<Student> Students { get; set; }
     }

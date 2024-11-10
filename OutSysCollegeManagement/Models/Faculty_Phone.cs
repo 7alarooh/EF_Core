@@ -21,7 +21,7 @@ namespace OutSysCollegeManagement.Models
         // phone number
         [Required(ErrorMessage = "Mobile number is required.")]
         [StringLength(15, ErrorMessage = "Mobile number cannot exceed 15 characters.")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must be exactly 10 digits.")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "Mobile number must be exactly 8 digits.")]
         public string Mobile_no { get; set; }  // Mobile number
     }
 }
