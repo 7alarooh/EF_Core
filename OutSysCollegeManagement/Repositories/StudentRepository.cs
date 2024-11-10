@@ -56,6 +56,15 @@ namespace OutSysCollegeManagement.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        // GetStudentsByCourse: Fetch all students enrolled in a specific course
+        public async Task<List<Student>> GetStudentsByCourse(int courseId)
+        {
+            return await _context.Students
+                .Where(s => s.Courses.Any(c => c.CourseId == courseId))
+                .Include(s => s.Courses)
+                .Include(s => s.Hostel)
+                .ToListAsync();
+        }
 
     }
 }
