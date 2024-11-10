@@ -65,6 +65,18 @@ namespace OutSysCollegeManagement.Repositories
                 throw new Exception($"Subject with ID {subjectId} not found.");
             }
         }
+        // 6. Get subjects taught by a specific faculty using LINQ
+        public async Task<List<Subject>> GetSubjectsTaughtByFaculty(int facultyId)
+        {
+            return await _context.Subjects
+                .Where(s => s.F_id == facultyId)
+                .ToListAsync();
+        }
 
+        // 7. Count the total number of subjects offered
+        public async Task<int> CountSubjects()
+        {
+            return await _context.Subjects.CountAsync();
+        }
     }
 }
