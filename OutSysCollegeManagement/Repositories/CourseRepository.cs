@@ -42,6 +42,14 @@ namespace OutSysCollegeManagement.Repositories
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
         }
+        // 4. Update existing course details
+        public async Task UpdateCourse(Course course)
+        {
+            if (course == null)
+                throw new ArgumentNullException(nameof(course));
 
+            _context.Courses.Update(course);
+            await _context.SaveChangesAsync();
+        }
     }
 }
