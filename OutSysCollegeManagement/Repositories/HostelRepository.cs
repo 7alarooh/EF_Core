@@ -20,6 +20,9 @@ namespace OutSysCollegeManagement.Repositories
         // GetAllHostels: Retrieve all hostel information, including associated students
         public async Task<List<Hostel>> GetAllHostels()
         {
+            //-- await -- allows for waiting on long-running tasks (such as database access
+            //or waiting for a network response) in an efficient way without freezing
+            //the user interface or blocking the application.
             return await _context.Hostels
                 .Include(h => h.Students)
                 .ToListAsync();
@@ -81,8 +84,5 @@ namespace OutSysCollegeManagement.Repositories
             return await _context.Hostels
                 .CountAsync(h => h.No_of_seats > h.Students.Count);
         }
-
-
-
     }
 }
