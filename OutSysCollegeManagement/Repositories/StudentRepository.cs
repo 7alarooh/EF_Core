@@ -73,6 +73,16 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(s => s.Hostel)
                 .ToListAsync();
         }
+        // SearchStudents: Search students by name, phone number, or other criteria
+        public async Task<List<Student>> SearchStudents(string searchTerm)
+        {
+            return await _context.Students
+                .Where(s => s.FName.Contains(searchTerm) || s.LName.Contains(searchTerm) || s.Phone.Contains(searchTerm))
+                .Include(s => s.Courses)
+                .Include(s => s.Hostel)
+                .ToListAsync();
+        }
+
 
     }
 }
