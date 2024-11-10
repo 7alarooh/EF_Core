@@ -92,6 +92,16 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(s => s.Hostel)
                 .ToListAsync();
         }
+        // PaginateStudents: Paginate the list of students
+        public async Task<List<Student>> PaginateStudents(int pageNumber, int pageSize)
+        {
+            return await _context.Students
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Include(s => s.Courses)
+                .Include(s => s.Hostel)
+                .ToListAsync();
+        }
 
     }
 }
