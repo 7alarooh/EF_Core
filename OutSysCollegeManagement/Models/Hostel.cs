@@ -21,5 +21,7 @@ namespace OutSysCollegeManagement.Models
         [Required(ErrorMessage = "Number of seats is required.")]
         [Range(1, 1000, ErrorMessage = "Number of seats must be between 1 and 1000.")]
         public int No_of_seats { get; set; }
+
+        public virtual ICollection<Student> Students { get; set; }
     }
 }

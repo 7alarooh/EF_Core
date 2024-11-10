@@ -28,7 +28,7 @@ namespace OutSysCollegeManagement.Models
         // Foreign key for Department
         [Required]
         [ForeignKey("Department")]
-        public int Department_id { get; set; }
+        public int? Department_id { get; set; }
 
         // Navigation property for Department
         public virtual Department Department { get; set; }

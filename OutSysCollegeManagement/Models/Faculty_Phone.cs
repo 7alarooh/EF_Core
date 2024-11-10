@@ -10,13 +10,18 @@ using System.Threading.Tasks;
 namespace OutSysCollegeManagement.Models
 {
     
-    [PrimaryKey(nameof(SID), nameof(Mobile_no))]
+    [PrimaryKey(nameof(SID), nameof(Mobile_no),nameof(Fid))]
     public class Faculty_Phone
     {
         //student id
         [ForeignKey("Student")]  
         public int SID { get; set; }
         public virtual Student Student { get; set; } // Navigation 
+
+        //Faculty id
+        [ForeignKey("Faculty")]
+        public int Fid { get; set; }
+        public virtual Faculty Faculty { get; set; } // Navigation 
 
         // phone number
         [Required(ErrorMessage = "Mobile number is required.")]

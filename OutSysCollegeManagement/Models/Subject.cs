@@ -22,7 +22,7 @@ namespace OutSysCollegeManagement.Models
 
         // F_id as foreign key referencing Faculty
         [ForeignKey("Faculty")]
-        public int F_id { get; set; }
+        public int? F_id { get; set; }
         public virtual Faculty Faculty { get; set; }  // Navigation
 
     }

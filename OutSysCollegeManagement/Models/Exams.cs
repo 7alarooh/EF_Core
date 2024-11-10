@@ -31,7 +31,7 @@ namespace OutSysCollegeManagement.Models
         public TimeSpan Time { get; set; }
         //department section
         [ForeignKey("Department")]
-        public int Department_id { get; set; }
+        public int? Department_id { get; set; }
 
         // Navigation 
         public virtual Department Department { get; set; }

@@ -58,10 +58,16 @@ namespace OutSysCollegeManagement.Models
         public StudentStatus State { get; set; }= StudentStatus.Active;
         // Navigation property for the many-to-many relationship
         public virtual ICollection<Course> Courses { get; set; }
+
         // F_id as foreign key referencing Faculty
         [ForeignKey("Faculty")]  
-        public int F_id { get; set; }  
+        public int? F_id { get; set; }  
         public virtual Faculty Faculty { get; set; }  // Navigation
+
+        // hostel_id as foreign key referencing Hostel
+        [ForeignKey("Hostel")]
+        public int? Hostel_id { get; set; }
+        public virtual Hostel Hostel { get; set; }  // Navigation
         //----------------------------------------------------------------//
 
         public static ValidationResult ValidateDOB(DateTime dob, ValidationContext context)

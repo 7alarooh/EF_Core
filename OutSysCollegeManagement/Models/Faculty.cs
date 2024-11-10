@@ -20,7 +20,7 @@ namespace OutSysCollegeManagement.Models
         public string Name { get; set; }
         // Department 
         [ForeignKey("Department")]  
-        public int Department_id { get; set; }  
+        public int? Department_id { get; set; }  
         public Department Department { get; set; }  // Navigation 
         // Faculty salary
         [Required(ErrorMessage = "Salary is required.")]
