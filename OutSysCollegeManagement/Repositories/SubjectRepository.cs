@@ -24,5 +24,22 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(s => s.Faculty) // Include faculty details
                 .ToListAsync();
         }
+        // 2. Get subject by ID, including faculty details
+        public async Task<Subject> GetSubjectById(int subjectId)
+        {
+            return await _context.Subjects
+                .Include(s => s.Faculty) // Include faculty details
+                .FirstOrDefaultAsync(s => s.Subject_id == subjectId);
+        }
+
+        // 3. Add a new subject to the database
+        public async Task AddSubject(Subject subject)
+        {
+            if (subject == null)
+                throw new ArgumentNullException(nameof(subject));
+
+            _context.Subjects.Add(subject);
+            await _context.SaveChangesAsync();
+        }
     }
 }
