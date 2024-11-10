@@ -32,6 +32,12 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(f => f.Subjects)
                 .Include(f => f.Courses)
                 .FirstOrDefaultAsync(f => f.Fid == id);
+        }  
+        // AddFaculty: Add a new faculty member
+        public async Task AddFaculty(Faculty faculty)
+        {
+            _context.Faculties.Add(faculty);
+            await _context.SaveChangesAsync();
         }
     }
 }
