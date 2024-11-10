@@ -60,7 +60,7 @@ namespace OutSysCollegeManagement.Repositories
         public async Task<List<Student>> GetStudentsByCourse(int courseId)
         {
             return await _context.Students
-                .Where(s => s.Courses.Any(c => c.CourseId == courseId))
+                .Where(s => s.Courses.Any(c => c.Course_id == courseId))
                 .Include(s => s.Courses)
                 .Include(s => s.Hostel)
                 .ToListAsync();
@@ -82,7 +82,16 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(s => s.Hostel)
                 .ToListAsync();
         }
-
+        // GetStudentsWithAgeAbove: Filter students by age
+        public async Task<List<Student>> GetStudentsWithAgeAbove(int age)
+        {
+            var currentDate = DateTime.Now;
+            return await _context.Students
+                .Where(s => currentDate.Year - s.DOB.Year > age)
+                .Include(s => s.Courses)
+                .Include(s => s.Hostel)
+                .ToListAsync();
+        }
 
     }
 }
