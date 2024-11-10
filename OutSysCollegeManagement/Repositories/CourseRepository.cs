@@ -65,5 +65,21 @@ namespace OutSysCollegeManagement.Repositories
                 throw new Exception($"Course with ID {courseId} not found.");
             }
         }
+        // 6. Get courses offered by a specific department
+        public async Task<List<Course>> GetCoursesByDepartment(int departmentId)
+        {
+            return await _context.Courses
+                .Where(c => c.Department_id == departmentId)
+                .ToListAsync();
+        }
+
+        // 7. Filter courses by duration using LINQ
+        public async Task<List<Course>> GetCoursesWithDuration(int duration)
+        {
+
+            return await _context.Courses
+                .Where(c => c.Duration == duration)
+                .ToListAsync();
+        }
     }
 }
