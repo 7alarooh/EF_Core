@@ -51,5 +51,19 @@ namespace OutSysCollegeManagement.Repositories
             _context.Courses.Update(course);
             await _context.SaveChangesAsync();
         }
+        // 5. Delete a course by ID
+        public async Task DeleteCourse(int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course != null)
+            {
+                _context.Courses.Remove(course);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception($"Course with ID {courseId} not found.");
+            }
+        }
     }
 }
