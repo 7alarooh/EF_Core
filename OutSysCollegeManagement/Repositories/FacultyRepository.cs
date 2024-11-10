@@ -39,5 +39,12 @@ namespace OutSysCollegeManagement.Repositories
             _context.Faculties.Add(faculty);
             await _context.SaveChangesAsync();
         }
+
+        // UpdateFaculty: Update the details of an existing faculty member
+        public async Task UpdateFaculty(Faculty faculty)
+        {
+            _context.Faculties.Update(faculty);
+            await _context.SaveChangesAsync();
+        }
     }
 }
