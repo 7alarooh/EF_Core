@@ -34,6 +34,13 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(s => s.Faculty)
                 .FirstOrDefaultAsync(s => s.SID == id);
         }
+        // AddStudent: Add a new student to the database
+        public async Task AddStudent(Student student)
+        {
+            _context.Students.Add(student);
+            await _context.SaveChangesAsync();
+        }
+
 
     }
 }
