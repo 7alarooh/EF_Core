@@ -81,5 +81,13 @@ namespace OutSysCollegeManagement.Repositories
                 .Where(c => c.Duration == duration)
                 .ToListAsync();
         }
+        // 8. Paginate courses (for large datasets)
+        public async Task<List<Course>> PaginateCourses(int pageNumber, int pageSize)
+        {
+            return await _context.Courses
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }
