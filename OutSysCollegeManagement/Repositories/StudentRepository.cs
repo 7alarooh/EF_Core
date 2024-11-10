@@ -73,15 +73,18 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(s => s.Hostel)
                 .ToListAsync();
         }
-        // SearchStudents: Search students by name, phone number, or other criteria
-        public async Task<List<Student>> SearchStudents(string searchTerm)
-        {
-            return await _context.Students
-                .Where(s => s.FName.Contains(searchTerm) || s.LName.Contains(searchTerm) || s.Phone.Contains(searchTerm))
-                .Include(s => s.Courses)
-                .Include(s => s.Hostel)
-                .ToListAsync();
-        }
+     // SearchStudents: Search students by name, phone number, or other criteria
+public async Task<List<Student>> SearchStudents(string searchTerm)
+{
+    return await _context.Students
+        .Where(s => s.FName.Contains(searchTerm) ||
+                    s.LName.Contains(searchTerm) ||
+                    s.StudentPhones.Any(p => p.Phone_no.Contains(searchTerm)))  // Search in Phone_no
+        .Include(s => s.Courses)
+        .Include(s => s.Hostel)
+        .Include(s => s.StudentPhones)  // Include the phone numbers for navigation property
+        .ToListAsync();
+}
         // GetStudentsWithAgeAbove: Filter students by age
         public async Task<List<Student>> GetStudentsWithAgeAbove(int age)
         {
