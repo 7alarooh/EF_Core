@@ -70,6 +70,8 @@ namespace OutSysCollegeManagement.Models
         public virtual Hostel Hostel { get; set; }  // Navigation
                                                     // Navigation property to represent the relationship with student_Phone
         public virtual ICollection<student_Phone> StudentPhones { get; set; } = new List<student_Phone>();
+        // Navigation property for exams
+        public virtual ICollection<Exams> Exams { get; set; }
         //----------------------------------------------------------------//
 
         public static ValidationResult ValidateDOB(DateTime dob, ValidationContext context)
