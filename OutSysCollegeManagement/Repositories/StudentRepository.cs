@@ -65,6 +65,14 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(s => s.Hostel)
                 .ToListAsync();
         }
+        // GetStudentsInHostel: List students living in a specified hostel
+        public async Task<List<Student>> GetStudentsInHostel(int hostelId)
+        {
+            return await _context.Students
+                .Where(s => s.Hostel_id == hostelId)
+                .Include(s => s.Hostel)
+                .ToListAsync();
+        }
 
     }
 }
