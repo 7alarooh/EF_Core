@@ -74,6 +74,11 @@ namespace OutSysCollegeManagement.Repositories
                 .Select(fp => fp.Faculty)
                 .FirstOrDefaultAsync();
         }
+        // CalculateAverageSalary: Use LINQ to calculate the average salary of faculty members
+        public async Task<decimal> CalculateAverageSalary()
+        {
+            return await _context.Faculties.AverageAsync(f => f.Salary);
+        }
 
     }
 }
