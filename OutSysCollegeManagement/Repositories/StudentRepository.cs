@@ -46,7 +46,16 @@ namespace OutSysCollegeManagement.Repositories
             _context.Students.Update(student);
             await _context.SaveChangesAsync();
         }
-
+        // DeleteStudent: Remove a student by ID and ensure related data integrity
+        public async Task DeleteStudent(int id)
+        {
+            var student = await _context.Students.FindAsync(id);
+            if (student != null)
+            {
+                _context.Students.Remove(student);
+                await _context.SaveChangesAsync();
+            }
+        }
 
     }
 }
