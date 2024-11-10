@@ -33,5 +33,15 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(c => c.Faculty)  // Faculty handling the course
                 .FirstOrDefaultAsync(c => c.Course_id == courseId);
         }
+        // 3. Add a new course to the database
+        public async Task AddCourse(Course course)
+        {
+            if (course == null)
+                throw new ArgumentNullException(nameof(course));
+
+            _context.Courses.Add(course);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
