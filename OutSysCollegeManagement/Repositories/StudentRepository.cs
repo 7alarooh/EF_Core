@@ -25,6 +25,15 @@ namespace OutSysCollegeManagement.Repositories
                 .Include(s => s.Faculty)
                 .ToListAsync();
         }
+        // GetStudentById: Retrieve a student by ID with related courses, exams, and hostel information
+        public async Task<Student> GetStudentById(int id)
+        {
+            return await _context.Students
+                .Include(s => s.Courses)
+                .Include(s => s.Hostel)
+                .Include(s => s.Faculty)
+                .FirstOrDefaultAsync(s => s.SID == id);
+        }
 
     }
 }
