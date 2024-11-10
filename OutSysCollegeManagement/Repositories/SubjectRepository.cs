@@ -41,5 +41,30 @@ namespace OutSysCollegeManagement.Repositories
             _context.Subjects.Add(subject);
             await _context.SaveChangesAsync();
         }
+        // 4. Update details of an existing subject
+        public async Task UpdateSubject(Subject subject)
+        {
+            if (subject == null)
+                throw new ArgumentNullException(nameof(subject));
+
+            _context.Subjects.Update(subject);
+            await _context.SaveChangesAsync();
+        }
+
+        // 5. Delete a subject by ID
+        public async Task DeleteSubject(int subjectId)
+        {
+            var subject = await _context.Subjects.FindAsync(subjectId);
+            if (subject != null)
+            {
+                _context.Subjects.Remove(subject);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception($"Subject with ID {subjectId} not found.");
+            }
+        }
+
     }
 }
