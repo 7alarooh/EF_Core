@@ -45,6 +45,17 @@ namespace OutSysCollegeManagement.Repositories
         {
             _context.Faculties.Update(faculty);
             await _context.SaveChangesAsync();
+        } 
+        
+        // DeleteFaculty: Delete a faculty member by ID
+        public async Task DeleteFaculty(int id)
+        {
+            var faculty = await _context.Faculties.FindAsync(id);
+            if (faculty != null)
+            {
+                _context.Faculties.Remove(faculty);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
