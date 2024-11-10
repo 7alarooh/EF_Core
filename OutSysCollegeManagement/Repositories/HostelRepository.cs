@@ -66,7 +66,23 @@ namespace OutSysCollegeManagement.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        // GetHostelsByCity: List hostels in a specific city using LINQ
+        public async Task<List<Hostel>> GetHostelsByCity(string city)
+        {
+            return await _context.Hostels
+                .Where(h => h.Students.Any(s => s.City == city))
+                .Include(h => h.Students)
+                .ToListAsync();
+        }
 
-       
+        // CountHostelsWithAvailableSeats: Provide a count of hostels that have available seats
+        public async Task<int> CountHostelsWithAvailableSeats()
+        {
+            return await _context.Hostels
+                .CountAsync(h => h.No_of_seats > h.Students.Count);
+        }
+
+
+
     }
 }
