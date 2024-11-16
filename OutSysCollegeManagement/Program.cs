@@ -15,6 +15,7 @@ namespace OutSysCollegeManagement
             using var dbContext = new CollegeDbContext();
             var courseRepository = new CourseRepository(dbContext);
             var facultyRepository = new FacultyRepository(dbContext);
+            var departmentRepository = new DepartmentRepository(dbContext);
             try {
                 // Call the CourseMenu method
                 await CourseMenu(courseRepository);
@@ -39,7 +40,7 @@ namespace OutSysCollegeManagement
                             await FacultyMenu(facultyRepository);
                             break;
                         case "2":
-                            //await DepartmentMenu();
+                            await DepartmentMenu(departmentRepository);
                             break;
                         case "3":
                             //await ExamMenu();
@@ -690,6 +691,7 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"An error occurred while retrieving the faculty: {ex.Message}");
             }
         }
+        //6. Get Faculties By Department
         public static async Task GetFacultyByDepartment(FacultyRepository facultyRepository)
         {
             try
@@ -732,7 +734,172 @@ namespace OutSysCollegeManagement
             }
         }
 
+        //                       DepartmentMenu
+        public static async Task DepartmentMenu(DepartmentRepository departmentRepository)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("===== Department Menu =====");
+                Console.WriteLine("1. View All Departments");
+                Console.WriteLine("2. Add New Department");
+                Console.WriteLine("3. Update Department");
+                Console.WriteLine("4. Delete Department");
+                Console.WriteLine("5. Return to Main Menu");
+                Console.Write("Choose an option: ");
 
+                var option = Console.ReadLine();
+
+                switch (option)
+                {
+                    case "1":
+                        await ViewAllDepartments(departmentRepository);
+                        break;
+                    case "2":
+                        //await AddNewDepartment(departmentRepository);
+                        break;
+                    case "3":
+                      //  await UpdateDepartment(departmentRepository);
+                        break;
+                    case "4":
+                       // await DeleteDepartment(departmentRepository);
+                        break;
+                    case "5":
+                        return; // Exit to main menu
+                    default:
+                        Console.WriteLine("Invalid option, please try again.");
+                        break;
+                }
+            }
+        }
+        public static async Task ViewAllDepartments(DepartmentRepository departmentRepository)
+        {
+            var departments = await departmentRepository.GetAllDepartments();
+            if (departments != null && departments.Any())
+            {
+                Console.Clear();
+                Console.WriteLine("===== All Departments =====");
+                foreach (var department in departments)
+                {
+                    Console.WriteLine($"ID: {department.Department_id}");
+                    Console.WriteLine($"Name: {department.D_name}");
+                    Console.WriteLine(new string('-', 30));
+                }
+            }
+            else
+            {
+                Console.WriteLine("No departments found.");
+            }
+        }
+        public static async Task AddNewDepartment(DepartmentRepository departmentRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Add New Department =====");
+
+                Console.Write("Enter Department Name: ");
+                var departmentName = Console.ReadLine();
+
+                // Validate user input
+                if (string.IsNullOrEmpty(departmentName))
+                {
+                    Console.WriteLine("Department name is required.");
+                    return;
+                }
+
+                var department = new Department { D_name = departmentName };
+
+                await departmentRepository.AddDepartment(department);
+                Console.WriteLine("Department added successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+        public static async Task UpdateDepartment(DepartmentRepository departmentRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Update Department =====");
+
+                // Get Department ID
+                Console.Write("Enter Department ID to update: ");
+                if (!int.TryParse(Console.ReadLine(), out var departmentId))
+                {
+                    Console.WriteLine("Invalid Department ID. Please enter a numeric value.");
+                    return;
+                }
+
+                var department = await departmentRepository.GetDepartmentById(departmentId);
+                if (department == null)
+                {
+                    Console.WriteLine($"Department with ID {departmentId} not found.");
+                    return;
+                }
+
+                // Update department name
+                Console.Write($"Enter new name for department (current: {department.D_name}): ");
+                var newName = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    department.D_name = newName;
+                    await departmentRepository.UpdateDepartment(department);
+                    Console.WriteLine("Department updated successfully!");
+                }
+                else
+                {
+                    Console.WriteLine("Department name cannot be empty.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+        public static async Task DeleteDepartment(DepartmentRepository departmentRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Delete Department =====");
+
+                // Get Department ID
+                Console.Write("Enter Department ID to delete: ");
+                if (!int.TryParse(Console.ReadLine(), out var departmentId))
+                {
+                    Console.WriteLine("Invalid Department ID. Please enter a numeric value.");
+                    return;
+                }
+
+                var department = await departmentRepository.GetDepartmentById(departmentId);
+                if (department == null)
+                {
+                    Console.WriteLine($"Department with ID {departmentId} not found.");
+                    return;
+                }
+
+                // Confirm Deletion
+                Console.WriteLine($"Are you sure you want to delete the department: {department.D_name}? (y/n): ");
+                var confirmDelete = Console.ReadLine()?.ToLower();
+                if (confirmDelete != "y")
+                {
+                    Console.WriteLine("Department deletion cancelled.");
+                    return;
+                }
+
+                // Delete the department
+                await departmentRepository.DeleteDepartment(departmentId);
+                Console.WriteLine("Department deleted successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
 
     }
 }
