@@ -18,7 +18,7 @@ namespace OutSysCollegeManagement.Repositories
         }
 
         // 1. Get all courses, including students enrolled and faculty details
-        public async Task<List<Course>> GetAllCourses()
+        public async Task<List<Course>> GetAllCoursesAsync()
         {
             return await _context.Courses
                 .Include(c => c.Students) // Enrolled students
