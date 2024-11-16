@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OutSysCollegeManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using OutSysCollegeManagement.Models;
 
-namespace OutSysCollegeManagement.Models
+namespace OutSysCollegeManagement.Repositories
 {
     public class ExamRepository
     {
@@ -87,5 +87,6 @@ namespace OutSysCollegeManagement.Models
                 .Where(e => e.Department_id == departmentId)
                 .CountAsync();
         }
-    }
+    
+}
 }

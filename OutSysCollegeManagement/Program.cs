@@ -16,6 +16,7 @@ namespace OutSysCollegeManagement
             var courseRepository = new CourseRepository(dbContext);
             var facultyRepository = new FacultyRepository(dbContext);
             var departmentRepository = new DepartmentRepository(dbContext);
+            var examRepository = new ExamRepository(dbContext);
             try {
                 // Call the CourseMenu method
                 await CourseMenu(courseRepository);
@@ -43,7 +44,7 @@ namespace OutSysCollegeManagement
                             await DepartmentMenu(departmentRepository);
                             break;
                         case "3":
-                            //await ExamMenu();
+                            await ExamMenu(examRepository);
                             break;
                         case "4":
                             await CourseMenu(courseRepository);
@@ -756,13 +757,13 @@ namespace OutSysCollegeManagement
                         await ViewAllDepartments(departmentRepository);
                         break;
                     case "2":
-                        //await AddNewDepartment(departmentRepository);
+                        await AddNewDepartment(departmentRepository);
                         break;
                     case "3":
-                      //  await UpdateDepartment(departmentRepository);
+                      await UpdateDepartment(departmentRepository);
                         break;
                     case "4":
-                       // await DeleteDepartment(departmentRepository);
+                       await DeleteDepartment(departmentRepository);
                         break;
                     case "5":
                         return; // Exit to main menu
@@ -900,6 +901,282 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
+        //                       ExamMenu
+        public static async Task ExamMenu(ExamRepository examRepository)
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("===== Exam Menu =====");
+                Console.WriteLine("1. View All Exams");
+                Console.WriteLine("2. Add New Exam");
+                Console.WriteLine("3. Update Exam");
+                Console.WriteLine("4. Delete Exam");
+                Console.WriteLine("5. View Exams by Date");
+                Console.WriteLine("6. View Exams by Student");
+                Console.WriteLine("7. Return to Main Menu");
+                Console.Write("Choose an option: ");
+
+                var option = Console.ReadLine();
+
+                switch (option)
+                {
+                    case "1":
+                        await ViewAllExams(examRepository);
+                        break;
+                    case "2":
+                        await AddNewExam(examRepository);
+                        break;
+                    case "3":
+                        await UpdateExam(examRepository);
+                        break;
+                    case "4":
+                        await DeleteExam(examRepository);
+                        break;
+                    case "5":
+                        await ViewExamsByDate(examRepository);
+                        break;
+                    case "6":
+                        await ViewExamsByStudent(examRepository);
+                        break;
+                    case "7":
+                        return; // Exit to main menu
+                    default:
+                        Console.WriteLine("Invalid option, please try again.");
+                        break;
+                }
+            }
+        }
+        public static async Task ViewAllExams(ExamRepository examRepository)
+        {
+            var exams = await examRepository.GetAllExams();
+            if (exams != null && exams.Any())
+            {
+                Console.Clear();
+                Console.WriteLine("===== All Exams =====");
+                foreach (var exam in exams)
+                {
+                    Console.WriteLine($"Exam Code: {exam.Exam_code}");
+                    Console.WriteLine($"Exam Name: {exam.D_name}");
+                    Console.WriteLine($"Department: {exam.Department?.D_name}");
+                    Console.WriteLine($"Date: {exam.Date.ToShortDateString()}");
+                    Console.WriteLine($"Students Enrolled: {exam.Students?.Count}");
+                    Console.WriteLine(new string('-', 30));
+                }
+            }
+            else
+            {
+                Console.WriteLine("No exams found.");
+            }
+        }
+        public static async Task AddNewExam(ExamRepository examRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Add New Exam =====");
+
+                // Exam Name
+                Console.Write("Enter Exam Name: ");
+                var examName = Console.ReadLine();
+
+                if (string.IsNullOrEmpty(examName))
+                {
+                    Console.WriteLine("Exam name is required.");
+                    return;
+                }
+
+                // Department ID
+                Console.Write("Enter Department ID: ");
+                if (!int.TryParse(Console.ReadLine(), out var departmentId))
+                {
+                    Console.WriteLine("Invalid Department ID.");
+                    return;
+                }
+
+                // Exam Date
+                Console.Write("Enter Exam Date (yyyy-mm-dd): ");
+                if (!DateTime.TryParse(Console.ReadLine(), out var examDate))
+                {
+                    Console.WriteLine("Invalid date format.");
+                    return;
+                }
+
+                var exam = new Exams
+                {
+                    D_name = examName,
+                    Department_id = departmentId,
+                    Date = examDate
+                };
+
+                await examRepository.AddExam(exam);
+                Console.WriteLine("Exam added successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+        public static async Task UpdateExam(ExamRepository examRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Update Exam =====");
+
+                // Get Exam Code
+                Console.Write("Enter Exam Code to update: ");
+                if (!int.TryParse(Console.ReadLine(), out var examCode))
+                {
+                    Console.WriteLine("Invalid Exam Code.");
+                    return;
+                }
+
+                var exam = await examRepository.GetExamById(examCode);
+                if (exam == null)
+                {
+                    Console.WriteLine($"Exam with code {examCode} not found.");
+                    return;
+                }
+
+                // Update Exam Details
+                Console.Write($"Enter new name for exam (current: {exam.D_name}): ");
+                var newName = Console.ReadLine();
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    exam.D_name = newName;
+                }
+
+                Console.Write($"Enter new date for exam (current: {exam.Date.ToShortDateString()}): ");
+                if (DateTime.TryParse(Console.ReadLine(), out var newDate))
+                {
+                    exam.Date = newDate;
+                }
+
+                await examRepository.UpdateExam(exam);
+                Console.WriteLine("Exam updated successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+        public static async Task DeleteExam(ExamRepository examRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Delete Exam =====");
+
+                // Get Exam Code
+                Console.Write("Enter Exam Code to delete: ");
+                if (!int.TryParse(Console.ReadLine(), out var examCode))
+                {
+                    Console.WriteLine("Invalid Exam Code.");
+                    return;
+                }
+
+                var exam = await examRepository.GetExamById(examCode);
+                if (exam == null)
+                {
+                    Console.WriteLine($"Exam with code {examCode} not found.");
+                    return;
+                }
+
+                // Confirm Deletion
+                Console.WriteLine($"Are you sure you want to delete the exam: {exam.D_name}? (y/n): ");
+                var confirmDelete = Console.ReadLine()?.ToLower();
+                if (confirmDelete != "y")
+                {
+                    Console.WriteLine("Exam deletion cancelled.");
+                    return;
+                }
+
+                await examRepository.DeleteExam(examCode);
+                Console.WriteLine("Exam deleted successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+        public static async Task ViewExamsByDate(ExamRepository examRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== View Exams by Date =====");
+
+                // Get Date Range
+                Console.Write("Enter Start Date (yyyy-mm-dd): ");
+                if (!DateTime.TryParse(Console.ReadLine(), out var startDate))
+                {
+                    Console.WriteLine("Invalid date format.");
+                    return;
+                }
+
+                Console.Write("Enter End Date (yyyy-mm-dd): ");
+                if (!DateTime.TryParse(Console.ReadLine(), out var endDate))
+                {
+                    Console.WriteLine("Invalid date format.");
+                    return;
+                }
+
+                var exams = await examRepository.GetExamsByDate(startDate, endDate);
+                if (exams.Any())
+                {
+                    Console.WriteLine("Exams within the date range:");
+                    foreach (var exam in exams)
+                    {
+                        Console.WriteLine($"Exam Code: {exam.Exam_code}, Name: {exam.D_name}, Date: {exam.Date.ToShortDateString()}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No exams found within the specified date range.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+        public static async Task ViewExamsByStudent(ExamRepository examRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== View Exams by Student =====");
+
+                // Get Student ID
+                Console.Write("Enter Student ID: ");
+                if (!int.TryParse(Console.ReadLine(), out var studentId))
+                {
+                    Console.WriteLine("Invalid Student ID.");
+                    return;
+                }
+
+                var exams = await examRepository.GetExamsByStudent(studentId);
+                if (exams.Any())
+                {
+                    Console.WriteLine($"Exams taken by Student ID {studentId}:");
+                    foreach (var exam in exams)
+                    {
+                        Console.WriteLine($"Exam Code: {exam.Exam_code}, Name: {exam.D_name}, Date: {exam.Date.ToShortDateString()}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No exams found for this student.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+
 
     }
 }
