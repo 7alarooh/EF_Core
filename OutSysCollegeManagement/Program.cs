@@ -13,7 +13,8 @@ namespace OutSysCollegeManagement
         static async Task Main(string[] args)
         {
             using var dbContext = new CollegeDbContext();
-            var courseRepository =new CourseRepository(dbContext);
+            var courseRepository = new CourseRepository(dbContext);
+            var facultyRepository = new FacultyRepository(dbContext);
             try {
                 // Call the CourseMenu method
                 await CourseMenu(courseRepository);
@@ -35,7 +36,7 @@ namespace OutSysCollegeManagement
                     switch (choice)
                     {
                         case "1":
-                            //await FacultyMenu();
+                            await FacultyMenu(facultyRepository);
                             break;
                         case "2":
                             //await DepartmentMenu();
@@ -352,6 +353,109 @@ namespace OutSysCollegeManagement
             catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching paginated courses: {ex.Message}");
+            }
+        }
+
+        //                 FacultyMenu
+        public static async Task FacultyMenu(FacultyRepository facultyRepository)
+        {
+            try
+            {
+                bool exit = false;
+                while (!exit)
+                {
+                    Console.Clear();
+                    Console.WriteLine("===== Faculty Management =====");
+                    Console.WriteLine("1. View All Faculties");
+                    Console.WriteLine("2. Add New Faculty");
+                    Console.WriteLine("3. Update Faculty");
+                    Console.WriteLine("4. Delete Faculty");
+                    Console.WriteLine("5. Get Faculty By ID");
+                    Console.WriteLine("6. Get Faculties By Department");
+                    Console.WriteLine("7. Return to Main Menu");
+                    Console.Write("Select an option: ");
+                    var choice = Console.ReadLine();
+
+                    switch (choice)
+                    {
+                        case "1":
+                            await GetAllFaculties(facultyRepository);
+                            break;
+                        case "2":
+                            //await AddFaculty(facultyRepository);
+                            break;
+                        case "3":
+                            //await UpdateFaculty(facultyRepository);
+                            break;
+                        case "4":
+                            //await DeleteFaculty(facultyRepository);
+                            break;
+                        case "5":
+                            //await GetFacultyById(facultyRepository);
+                            break;
+                        case "6":
+                            //await GetFacultyByDepartment(facultyRepository);
+                            break;
+                        case "7":
+                            exit = true;
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice. Please try again.");
+                            break;
+                    }
+
+                    if (!exit)
+                    {
+                        Console.WriteLine("\nPress any key to return to the Faculty Menu...");
+                        Console.ReadKey();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred in the Faculty Menu: {ex.Message}");
+            }
+        }
+        private static async Task GetAllFaculties(FacultyRepository facultyRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== All Faculties =====");
+
+                var faculties = await facultyRepository.GetAllFaculties();
+                if (faculties.Any())
+                {
+                    foreach (var faculty in faculties)
+                    {
+                        Console.WriteLine($"ID: {faculty.Fid}");
+                        Console.WriteLine($"Name: {faculty.Name}");
+                        Console.WriteLine($"Department: {faculty.Department?.D_name ?? "N/A"}");
+                        Console.WriteLine($"Subjects: {string.Join(", ", faculty.Subjects.Select(s => s.Subject_name))}");
+                        Console.WriteLine(new string('-', 40));
+
+                        // Display all phone numbers
+                        if (faculty.Faculty_Phones != null && faculty.Faculty_Phones.Any())
+                        {
+                            Console.WriteLine($"Mobile(s): {string.Join(", ", faculty.Faculty_Phones.Select(fp => fp.Phone_no))}");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Mobile(s): None");
+                        }
+
+                        Console.WriteLine($"Salary: {faculty.Salary:C}");
+                        Console.WriteLine(new string('-', 40));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No faculties found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving faculties: {ex.Message}");
             }
         }
 
