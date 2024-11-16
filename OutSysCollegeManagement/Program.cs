@@ -382,7 +382,7 @@ namespace OutSysCollegeManagement
                             await GetAllFaculties(facultyRepository);
                             break;
                         case "2":
-                            //await AddFaculty(facultyRepository);
+                            await AddFaculty(facultyRepository);
                             break;
                         case "3":
                             //await UpdateFaculty(facultyRepository);
@@ -416,7 +416,8 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"An error occurred in the Faculty Menu: {ex.Message}");
             }
         }
-        private static async Task GetAllFaculties(FacultyRepository facultyRepository)
+        //1. View All Faculties
+        public static async Task GetAllFaculties(FacultyRepository facultyRepository)
         {
             try
             {
@@ -458,6 +459,60 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"An error occurred while retrieving faculties: {ex.Message}");
             }
         }
+        //2. Add New Faculty
+        private static async Task AddFaculty(FacultyRepository facultyRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Add New Faculty =====");
+
+                // Input Faculty Details
+                Console.Write("Enter Faculty Name: ");
+                var name = Console.ReadLine();
+
+                Console.Write("Enter Department ID (or leave blank for no department): ");
+                var departmentInput = Console.ReadLine();
+                int? departmentId = string.IsNullOrEmpty(departmentInput) ? null : int.Parse(departmentInput);
+
+                Console.Write("Enter Salary: ");
+                var salary = decimal.Parse(Console.ReadLine());
+
+                // Input Phone Numbers
+                var phoneNumbers = new List<Faculty_Phone>();
+                bool addMorePhones = true;
+
+                while (addMorePhones)
+                {
+                    Console.Write("Enter Phone Number (8 digits): ");
+                    var phoneNo = Console.ReadLine();
+                    phoneNumbers.Add(new Faculty_Phone { Phone_no = phoneNo });
+
+                    Console.Write("Do you want to add another phone number? (y/n): ");
+                    var choice = Console.ReadLine();
+                    addMorePhones = choice?.ToLower() == "y";
+                }
+
+                // Create Faculty Object
+                var faculty = new Faculty
+                {
+                    Name = name,
+                    Department_id = departmentId,
+                    Salary = salary,
+                    Faculty_Phones = phoneNumbers
+                };
+
+                // Save Faculty to Repository
+                await facultyRepository.AddFaculty(faculty);
+                Console.WriteLine("Faculty added successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while adding faculty: {ex.Message}");
+            }
+        }
+        //3. Update Faculty
+
 
 
 
