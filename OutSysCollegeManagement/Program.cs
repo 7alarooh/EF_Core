@@ -391,7 +391,7 @@ namespace OutSysCollegeManagement
                             await DeleteFaculty(facultyRepository);
                             break;
                         case "5":
-                            //await GetFacultyById(facultyRepository);
+                            await GetFacultyById(facultyRepository);
                             break;
                         case "6":
                             //await GetFacultyByDepartment(facultyRepository);
@@ -652,7 +652,44 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"An error occurred while deleting the faculty: {ex.Message}");
             }
         }
+        //5. Get Faculty By ID
+        public static async Task GetFacultyById(FacultyRepository facultyRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Get Faculty By ID =====");
 
+                // Get Faculty ID
+                Console.Write("Enter Faculty ID to fetch details: ");
+                if (!int.TryParse(Console.ReadLine(), out var facultyId))
+                {
+                    Console.WriteLine("Invalid Faculty ID. Please enter a numeric value.");
+                    return;
+                }
+
+                // Retrieve Faculty
+                var faculty = await facultyRepository.GetFacultyById(facultyId);
+                if (faculty == null)
+                {
+                    Console.WriteLine($"Faculty with ID {facultyId} not found.");
+                    return;
+                }
+
+                // Display Faculty details
+                Console.WriteLine($"ID: {faculty.Fid}");
+                Console.WriteLine($"Name: {faculty.Name}");
+                Console.WriteLine($"Department: {faculty.Department?.D_name}");
+                Console.WriteLine($"Salary: {faculty.Salary:C}");
+                Console.WriteLine("Subjects: " + (faculty.Subjects != null && faculty.Subjects.Any() ? string.Join(", ", faculty.Subjects.Select(s => s.Subject_name)) : "None"));
+                Console.WriteLine("Courses: " + (faculty.Courses != null && faculty.Courses.Any() ? string.Join(", ", faculty.Courses.Select(c => c.Course_name)) : "None"));
+                Console.WriteLine(new string('-', 40));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving the faculty: {ex.Message}");
+            }
+        }
 
 
 
