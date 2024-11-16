@@ -66,6 +66,8 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
+
+        //                       CourseMenu
         public static async Task CourseMenu(CourseRepository courseRepository)
         {
             try
@@ -105,13 +107,13 @@ namespace OutSysCollegeManagement
                             await DeleteCourse(courseRepository);
                             break;
                         case "6":
-                            //await GetCoursesByDepartment();
+                            await GetCoursesByDepartment(courseRepository);
                             break;
                         case "7":
-                            //await GetCoursesByDuration();
+                            await GetCoursesByDuration(courseRepository);
                             break;
                         case "8":
-                            //await PaginateCourses();
+                            await PaginateCourses(courseRepository);
                             break;
                         case "9":
                             exit = true;
@@ -133,6 +135,7 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"An error occurred in the Course Repository: {ex.Message}");
             }
         }
+        //1. Get All Courses
         public static async Task<List<Course>> GetAllCourses(CourseRepository courseRepository)
         {
             try
@@ -161,6 +164,7 @@ namespace OutSysCollegeManagement
                 return new List<Course>(); // Return an empty list in case of an exception
             }
         }
+        //2. Get Course By ID
         public static async Task GetCourseById(CourseRepository courseRepository)
         {
             try
@@ -188,6 +192,7 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"Error fetching course: {ex.Message}");
             }
         }
+        //3. Add Course
         public static async Task AddCourse(CourseRepository courseRepository)
         {
             try
@@ -211,6 +216,7 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"Error adding course: {ex.Message}");
             }
         }
+        //4. Update Course
         public static async Task UpdateCourse(CourseRepository courseRepository)
         {
             try
@@ -247,7 +253,7 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"Error updating course: {ex.Message}");
             }
         }
-
+        //5. Delete Course
         public static async Task DeleteCourse(CourseRepository courseRepository)
         {
             try
@@ -268,6 +274,87 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"Error deleting course: {ex.Message}");
             }
         }
+        //6. Get Courses By Department
+        public static async Task GetCoursesByDepartment(CourseRepository courseRepository)
+        {
+            try
+            {
+                Console.Write("Enter the Department ID: ");
+                if (int.TryParse(Console.ReadLine(), out int departmentId))
+                {
+                    var courses = await courseRepository.GetCoursesByDepartment(departmentId);
+                    foreach (var course in courses)
+                    {
+                        Console.WriteLine($"ID: {course.Course_id}, Name: {course.Course_name}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid Department ID.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching courses by department: {ex.Message}");
+            }
+        }
+        //7. Get Courses By Duration
+        public static async Task GetCoursesByDuration(CourseRepository courseRepository)
+        {
+            try
+            {
+                Console.Write("Enter minimum duration (in months): ");
+                if (int.TryParse(Console.ReadLine(), out int minDuration))
+                {
+                    var courses = await courseRepository.GetCoursesWithDuration(minDuration);
+                    foreach (var course in courses)
+                    {
+                        Console.WriteLine($"ID: {course.Course_id}, Name: {course.Course_name}, Duration: {course.Duration}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid duration.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching courses by duration: {ex.Message}");
+            }
+        }
+        //8. Paginate Courses
+        public static async Task PaginateCourses(CourseRepository courseRepository)
+        {
+            try
+            {
+                Console.Write("Enter the page number: ");
+                if (int.TryParse(Console.ReadLine(), out int pageNumber))
+                {
+                    Console.Write("Enter the page size: ");
+                    if (int.TryParse(Console.ReadLine(), out int pageSize))
+                    {
+                        var courses = await courseRepository.PaginateCourses(pageNumber, pageSize);
+                        foreach (var course in courses)
+                        {
+                            Console.WriteLine($"ID: {course.Course_id}, Name: {course.Course_name}, Duration: {course.Duration}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid page size. Please enter a valid number.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid page number. Please enter a valid number.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching paginated courses: {ex.Message}");
+            }
+        }
+
 
 
     }
