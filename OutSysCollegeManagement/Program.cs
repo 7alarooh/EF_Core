@@ -17,6 +17,7 @@ namespace OutSysCollegeManagement
             var facultyRepository = new FacultyRepository(dbContext);
             var departmentRepository = new DepartmentRepository(dbContext);
             var examRepository = new ExamRepository(dbContext);
+            var subjectRepository = new SubjectRepository(dbContext);
             try {
                 // Call the CourseMenu method
                 await CourseMenu(courseRepository);
@@ -50,7 +51,7 @@ namespace OutSysCollegeManagement
                             await CourseMenu(courseRepository);
                             break;
                         case "5":
-                            //await SubjectMenu();
+                            await SubjectMenu(subjectRepository);
                             break;
                         case "6":
                             //await HostelMenu();
@@ -1175,7 +1176,206 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
+        //                     SubjectMenu
+        public static async Task SubjectMenu(SubjectRepository subjectRepository)
+        {
+            bool showMenu = true;
+            while (showMenu)
+            {
+                Console.Clear();
+                Console.WriteLine("Subject Management Menu:");
+                Console.WriteLine("1. View all subjects");
+                Console.WriteLine("2. View subject by ID");
+                Console.WriteLine("3. Add a new subject");
+                Console.WriteLine("4. Update a subject");
+                Console.WriteLine("5. Delete a subject");
+                Console.WriteLine("6. Get subjects taught by a faculty");
+                Console.WriteLine("7. Count total subjects");
+                Console.WriteLine("8. Exit");
+                Console.Write("Choose an option: ");
 
+                var choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        await ViewAllSubjects(subjectRepository);
+                        break;
+
+                    case "2":
+                        await ViewSubjectById(subjectRepository);
+                        break;
+
+                    case "3":
+                        await AddNewSubject(subjectRepository);
+                        break;
+
+                    case "4":
+                        await UpdateSubject(subjectRepository);
+                        break;
+
+                    case "5":
+                        await DeleteSubject(subjectRepository);
+                        break;
+
+                    case "6":
+                        await GetSubjectsByFaculty(subjectRepository);
+                        break;
+
+                    case "7":
+                        await CountSubjects(subjectRepository);
+                        break;
+
+                    case "8":
+                        showMenu = false;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
+        }
+
+        public static async Task ViewAllSubjects(SubjectRepository subjectRepository)
+        {
+            var subjects = await subjectRepository.GetAllSubjects();
+            Console.WriteLine("\nSubjects List:");
+            foreach (var subject in subjects)
+            {
+                Console.WriteLine($"ID: {subject.Subject_id}, Name: {subject.Subject_name}, Faculty: {subject.Faculty.Name}");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+
+        public static async Task ViewSubjectById(SubjectRepository subjectRepositor)
+        {
+            Console.Write("Enter Subject ID: ");
+            if (int.TryParse(Console.ReadLine(), out int subjectId))
+            {
+                var subject = await subjectRepositor.GetSubjectById(subjectId);
+                if (subject != null)
+                {
+                    Console.WriteLine($"\nSubject ID: {subject.Subject_id}");
+                    Console.WriteLine($"Name: {subject.Subject_name}");
+                    Console.WriteLine($"Faculty: {subject.Faculty.Name}");
+                }
+                else
+                {
+                    Console.WriteLine("Subject not found.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+
+        public static async Task AddNewSubject(SubjectRepository subjectRepositor)
+        {
+            Console.Write("Enter subject name: ");
+            string name = Console.ReadLine();
+            Console.Write("Enter faculty ID: ");
+            if (int.TryParse(Console.ReadLine(), out int facultyId))
+            {
+                var newSubject = new Subject
+                {
+                    Subject_name = name,
+                    F_id = facultyId
+                };
+
+                await subjectRepositor.AddSubject(newSubject);
+                Console.WriteLine("Subject added successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid faculty ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+
+        public static async Task UpdateSubject(SubjectRepository subjectRepositor)
+        {
+            Console.Write("Enter the ID of the subject to update: ");
+            if (int.TryParse(Console.ReadLine(), out int subjectId))
+            {
+                var subject = await subjectRepositor.GetSubjectById(subjectId);
+                if (subject != null)
+                {
+                    Console.Write("Enter new name for the subject: ");
+                    subject.Subject_name = Console.ReadLine();
+
+                    Console.Write("Enter new faculty ID: ");
+                    if (int.TryParse(Console.ReadLine(), out int facultyId))
+                    {
+                        subject.F_id = facultyId;
+                        await subjectRepositor.UpdateSubject(subject);
+                        Console.WriteLine("Subject updated successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid faculty ID.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Subject not found.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+
+        public static async Task DeleteSubject(SubjectRepository subjectRepositor)
+        {
+            Console.Write("Enter the ID of the subject to delete: ");
+            if (int.TryParse(Console.ReadLine(), out int subjectId))
+            {
+                await subjectRepositor.DeleteSubject(subjectId);
+                Console.WriteLine("Subject deleted successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+
+        public static async Task GetSubjectsByFaculty(SubjectRepository subjectRepositor)
+        {
+            Console.Write("Enter faculty ID: ");
+            if (int.TryParse(Console.ReadLine(), out int facultyId))
+            {
+                var subjects = await subjectRepositor.GetSubjectsTaughtByFaculty(facultyId);
+                Console.WriteLine("\nSubjects taught by this faculty:");
+                foreach (var subject in subjects)
+                {
+                    Console.WriteLine($"ID: {subject.Subject_id}, Name: {subject.Subject_name}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid faculty ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+
+        public static async Task CountSubjects(SubjectRepository subjectRepository)
+        {
+            var count = await subjectRepository.CountSubjects();
+            Console.WriteLine($"\nTotal number of subjects: {count}");
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
 
 
     }
