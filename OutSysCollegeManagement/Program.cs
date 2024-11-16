@@ -385,7 +385,7 @@ namespace OutSysCollegeManagement
                             await AddFaculty(facultyRepository);
                             break;
                         case "3":
-                            //await UpdateFaculty(facultyRepository);
+                            await UpdateFaculty(facultyRepository);
                             break;
                         case "4":
                             //await DeleteFaculty(facultyRepository);
@@ -512,6 +512,96 @@ namespace OutSysCollegeManagement
             }
         }
         //3. Update Faculty
+        private static async Task UpdateFaculty(FacultyRepository facultyRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Update Faculty =====");
+
+                // Get Faculty ID
+                Console.Write("Enter Faculty ID to update: ");
+                if (!int.TryParse(Console.ReadLine(), out var facultyId))
+                {
+                    Console.WriteLine("Invalid Faculty ID. Please enter a numeric value.");
+                    return;
+                }
+
+                // Retrieve Faculty
+                var faculty = await facultyRepository.GetFacultyById(facultyId);
+                if (faculty == null)
+                {
+                    Console.WriteLine($"Faculty with ID {facultyId} not found.");
+                    return;
+                }
+
+                // Display Current Details
+                Console.WriteLine($"Current Name: {faculty.Name}");
+                Console.WriteLine($"Current Department ID: {faculty.Department_id}");
+                Console.WriteLine($"Current Salary: {faculty.Salary}");
+                Console.WriteLine("Current Phone Numbers:");
+                foreach (var phone in faculty.Faculty_Phones)
+                {
+                    Console.WriteLine($"- {phone.Phone_no}");
+                }
+
+                // Update Faculty Details
+                Console.Write("Enter new Name (leave blank to keep current): ");
+                var name = Console.ReadLine();
+                if (!string.IsNullOrEmpty(name))
+                {
+                    faculty.Name = name;
+                }
+
+                Console.Write("Enter new Department ID (leave blank to keep current): ");
+                var departmentInput = Console.ReadLine();
+                if (!string.IsNullOrEmpty(departmentInput))
+                {
+                    faculty.Department_id = int.Parse(departmentInput);
+                }
+
+                Console.Write("Enter new Salary (leave blank to keep current): ");
+                var salaryInput = Console.ReadLine();
+                if (!string.IsNullOrEmpty(salaryInput))
+                {
+                    faculty.Salary = decimal.Parse(salaryInput);
+                }
+
+                // Update Phone Numbers
+                Console.WriteLine("Do you want to update phone numbers? (y/n): ");
+                var updatePhonesChoice = Console.ReadLine()?.ToLower();
+                if (updatePhonesChoice == "y")
+                {
+                    // Clear existing phone numbers
+                    faculty.Faculty_Phones.Clear();
+
+                    // Add new phone numbers
+                    var newPhoneNumbers = new List<Faculty_Phone>();
+                    bool addMorePhones = true;
+
+                    while (addMorePhones)
+                    {
+                        Console.Write("Enter new Phone Number (8 digits): ");
+                        var phoneNo = Console.ReadLine();
+                        newPhoneNumbers.Add(new Faculty_Phone { Fid = faculty.Fid, Phone_no = phoneNo });
+
+                        Console.Write("Do you want to add another phone number? (y/n): ");
+                        var choice = Console.ReadLine();
+                        addMorePhones = choice?.ToLower() == "y";
+                    }
+
+                    faculty.Faculty_Phones = newPhoneNumbers;
+                }
+
+                // Save Changes
+                await facultyRepository.UpdateFaculty(faculty);
+                Console.WriteLine("Faculty details updated successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while updating faculty: {ex.Message}");
+            }
+        }
 
 
 
