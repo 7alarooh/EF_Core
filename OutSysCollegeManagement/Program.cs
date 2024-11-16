@@ -18,6 +18,7 @@ namespace OutSysCollegeManagement
             var departmentRepository = new DepartmentRepository(dbContext);
             var examRepository = new ExamRepository(dbContext);
             var subjectRepository = new SubjectRepository(dbContext);
+            var hostelRepository = new HostelRepository(dbContext);
             try {
                 // Call the CourseMenu method
                 await CourseMenu(courseRepository);
@@ -54,7 +55,7 @@ namespace OutSysCollegeManagement
                             await SubjectMenu(subjectRepository);
                             break;
                         case "6":
-                            //await HostelMenu();
+                            await HostelMenu(hostelRepository);
                             break;
                         case "7":
                             exit = true;
@@ -1377,6 +1378,216 @@ namespace OutSysCollegeManagement
             Console.ReadKey();
         }
 
+        //                  HostelMenu
+        public static async Task HostelMenu(HostelRepository hostelRepository)
+        {
+            bool showMenu = true;
+            while (showMenu)
+            {
+                Console.Clear();
+                Console.WriteLine("Hostel Management Menu:");
+                Console.WriteLine("1. View all hostels");
+                Console.WriteLine("2. View hostel by ID");
+                Console.WriteLine("3. Add a new hostel");
+                Console.WriteLine("4. Update a hostel");
+                Console.WriteLine("5. Delete a hostel");
+                Console.WriteLine("6. Get students in a hostel");
+                Console.WriteLine("7. Count total hostels");
+                Console.WriteLine("8. Exit");
+                Console.Write("Choose an option: ");
+
+                var choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        await ViewAllHostels(hostelRepository);
+                        break;
+
+                    case "2":
+                        await ViewHostelById(hostelRepository);
+                        break;
+
+                    case "3":
+                        await AddNewHostel(hostelRepository);
+                        break;
+
+                    case "4":
+                        await UpdateHostel(hostelRepository);
+                        break;
+
+                    case "5":
+                        await DeleteHostel(hostelRepository);
+                        break;
+
+                    case "6":
+                        await GetStudentsInHostel(hostelRepository);
+                        break;
+
+                    case "7":
+                        await CountHostels(hostelRepository);
+                        break;
+
+                    case "8":
+                        showMenu = false;
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
+        }
+        public static async Task ViewAllHostels(HostelRepository hostelRepository)
+        {
+            var hostels = await hostelRepository.GetAllHostels();
+            Console.WriteLine("\nList of all Hostels:");
+            foreach (var hostel in hostels)
+            {
+                Console.WriteLine($"ID: {hostel.Hostel_id}, Name: {hostel.Hostel_name}, Seats: {hostel.No_of_seats}");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+        public static async Task ViewHostelById(HostelRepository hostelRepository)
+        {
+            Console.Write("\nEnter Hostel ID: ");
+            if (int.TryParse(Console.ReadLine(), out int hostelId))
+            {
+                var hostel = await hostelRepository.GetHostelById(hostelId);
+                if (hostel != null)
+                {
+                    Console.WriteLine($"\nHostel ID: {hostel.Hostel_id}");
+                    Console.WriteLine($"Hostel Name: {hostel.Hostel_name}");
+                    Console.WriteLine($"Number of Seats: {hostel.No_of_seats}");
+                }
+                else
+                {
+                    Console.WriteLine("Hostel not found.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid Hostel ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+        public static async Task AddNewHostel(HostelRepository hostelRepository)
+        {
+            Console.Write("\nEnter Hostel Name: ");
+            string hostelName = Console.ReadLine();
+
+            Console.Write("Enter Number of Seats: ");
+            if (int.TryParse(Console.ReadLine(), out int numberOfSeats))
+            {
+                var newHostel = new Hostel
+                {
+                    Hostel_name = hostelName,
+                    No_of_seats = numberOfSeats
+                };
+
+                await hostelRepository.AddHostel(newHostel);
+                Console.WriteLine("Hostel added successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Invalid number of seats.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+
+        public static async Task UpdateHostel(HostelRepository hostelRepository)
+        {
+            Console.Write("\nEnter Hostel ID to update: ");
+            if (int.TryParse(Console.ReadLine(), out int hostelId))
+            {
+                var hostel = await hostelRepository.GetHostelById(hostelId);
+                if (hostel != null)
+                {
+                    Console.Write("Enter new Hostel Name: ");
+                    hostel.Hostel_name = Console.ReadLine();
+
+                    Console.Write("Enter new Number of Seats: ");
+                    if (int.TryParse(Console.ReadLine(), out int seats))
+                    {
+                        hostel.No_of_seats = seats;
+                        await hostelRepository.UpdateHostel(hostel);
+                        Console.WriteLine("Hostel updated successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid number of seats.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Hostel not found.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid Hostel ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+        public static async Task DeleteHostel(HostelRepository hostelRepository)
+        {
+            Console.Write("\nEnter Hostel ID to delete: ");
+            if (int.TryParse(Console.ReadLine(), out int hostelId))
+            {
+                var hostel = await hostelRepository.GetHostelById(hostelId);
+                if (hostel != null)
+                {
+                    await hostelRepository.DeleteHostel(hostelId);
+                    Console.WriteLine("Hostel deleted successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Hostel not found.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid Hostel ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+        public static async Task GetStudentsInHostel(HostelRepository hostelRepository)
+        {
+            Console.Write("\nEnter Hostel ID to view students: ");
+            if (int.TryParse(Console.ReadLine(), out int hostelId))
+            {
+                var students = await hostelRepository.GetStudentsInHostel(hostelId);
+                if (students != null && students.Any())
+                {
+                    Console.WriteLine("\nStudents in the Hostel:");
+                    foreach (var student in students)
+                    {
+                        Console.WriteLine($"ID: {student.Student_id}, Name: {student.Student_name}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No students found in this hostel.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid Hostel ID.");
+            }
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
+        public static async Task CountHostels(HostelRepository hostelRepository)
+        {
+            var count = await hostelRepository.CountHostelsWithAvailableSeats();
+            Console.WriteLine($"\nTotal number of hostels: {count}");
+            Console.WriteLine("\nPress any key to go back to the menu...");
+            Console.ReadKey();
+        }
 
     }
 }
