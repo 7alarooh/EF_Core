@@ -50,14 +50,31 @@ namespace OutSysCollegeManagement.Repositories
         // DeleteFaculty: Delete a faculty member by ID
         public async Task DeleteFaculty(int id)
         {
-            var faculty = await _context.Faculties.FindAsync(id);
+            var faculty = await _context.Faculties
+                .Include(f => f.Faculty_Phones)  // Include related phone records
+                .FirstOrDefaultAsync(f => f.Fid == id);
+
             if (faculty != null)
             {
+                // Remove associated phone numbers first
+                if (faculty.Faculty_Phones != null && faculty.Faculty_Phones.Any())
+                {
+                    await DeleteFacultyPhones(faculty.Faculty_Phones);
+                }
+
+                // Then remove the faculty
                 _context.Faculties.Remove(faculty);
                 await _context.SaveChangesAsync();
             }
         }
+        // DeleteFacultyPhones: Delete all phone numbers associated with a faculty
+        public async Task DeleteFacultyPhones(List<Faculty_Phone> facultyPhones)
+        {
+            _context.Faculty_Phone.RemoveRange(facultyPhones);  // Remove all related phone records
+            await _context.SaveChangesAsync();
+        }
         // GetFacultyByDepartment: List faculty members based on their department
+
         public async Task<List<Faculty>> GetFacultyByDepartment(int departmentId)
         {
             return await _context.Faculties

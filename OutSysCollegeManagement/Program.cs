@@ -388,7 +388,7 @@ namespace OutSysCollegeManagement
                             await UpdateFaculty(facultyRepository);
                             break;
                         case "4":
-                            //await DeleteFaculty(facultyRepository);
+                            await DeleteFaculty(facultyRepository);
                             break;
                         case "5":
                             //await GetFacultyById(facultyRepository);
@@ -600,6 +600,56 @@ namespace OutSysCollegeManagement
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while updating faculty: {ex.Message}");
+            }
+        }
+        //4. Delete Faculty
+        public static async Task DeleteFaculty(FacultyRepository facultyRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Delete Faculty =====");
+
+                // Get Faculty ID
+                Console.Write("Enter Faculty ID to delete: ");
+                if (!int.TryParse(Console.ReadLine(), out var facultyId))
+                {
+                    Console.WriteLine("Invalid Faculty ID. Please enter a numeric value.");
+                    return;
+                }
+
+                // Retrieve Faculty
+                var faculty = await facultyRepository.GetFacultyById(facultyId);
+                if (faculty == null)
+                {
+                    Console.WriteLine($"Faculty with ID {facultyId} not found.");
+                    return;
+                }
+
+                // Confirm Deletion
+                Console.WriteLine($"Are you sure you want to delete faculty: {faculty.Name}? (y/n): ");
+                var confirmDelete = Console.ReadLine()?.ToLower();
+                if (confirmDelete != "y")
+                {
+                    Console.WriteLine("Faculty deletion cancelled.");
+                    return;
+                }
+
+                // Delete Associated Data (Faculty Phones)
+                if (faculty.Faculty_Phones != null && faculty.Faculty_Phones.Any())
+                {
+                    await facultyRepository.DeleteFacultyPhones(faculty.Faculty_Phones);
+                    Console.WriteLine("Associated phone numbers deleted.");
+                }
+
+                // Delete the Faculty by passing the Faculty ID
+                await facultyRepository.DeleteFaculty(facultyId);
+
+                Console.WriteLine("Faculty deleted successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while deleting the faculty: {ex.Message}");
             }
         }
 
