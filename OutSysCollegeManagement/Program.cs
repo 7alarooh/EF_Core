@@ -102,7 +102,7 @@ namespace OutSysCollegeManagement
                             await UpdateCourse(courseRepository);
                             break;
                         case "5":
-                            //await DeleteCourse();
+                            await DeleteCourse(courseRepository);
                             break;
                         case "6":
                             //await GetCoursesByDepartment();
@@ -248,6 +248,26 @@ namespace OutSysCollegeManagement
             }
         }
 
+        public static async Task DeleteCourse(CourseRepository courseRepository)
+        {
+            try
+            {
+                Console.Write("Enter the Course ID to delete: ");
+                if (int.TryParse(Console.ReadLine(), out int courseId))
+                {
+                    await courseRepository.DeleteCourse(courseId);
+                    Console.WriteLine("Course deleted successfully.");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid Course ID.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting course: {ex.Message}");
+            }
+        }
 
 
     }
