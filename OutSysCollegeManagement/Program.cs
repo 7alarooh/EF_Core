@@ -394,7 +394,7 @@ namespace OutSysCollegeManagement
                             await GetFacultyById(facultyRepository);
                             break;
                         case "6":
-                            //await GetFacultyByDepartment(facultyRepository);
+                            await GetFacultyByDepartment(facultyRepository);
                             break;
                         case "7":
                             exit = true;
@@ -688,6 +688,47 @@ namespace OutSysCollegeManagement
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred while retrieving the faculty: {ex.Message}");
+            }
+        }
+        public static async Task GetFacultyByDepartment(FacultyRepository facultyRepository)
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("===== Get Faculty By Department =====");
+
+                // Get Department ID
+                Console.Write("Enter Department ID to fetch faculty members: ");
+                if (!int.TryParse(Console.ReadLine(), out var departmentId))
+                {
+                    Console.WriteLine("Invalid Department ID. Please enter a numeric value.");
+                    return;
+                }
+
+                // Retrieve Faculty by Department
+                var faculties = await facultyRepository.GetFacultyByDepartment(departmentId);
+                if (faculties == null || !faculties.Any())
+                {
+                    Console.WriteLine($"No faculty members found in department with ID {departmentId}.");
+                    return;
+                }
+
+                // Display Faculty details
+                Console.WriteLine($"Faculty Members in Department ID {departmentId}:");
+                foreach (var faculty in faculties)
+                {
+                    Console.WriteLine($"ID: {faculty.Fid}");
+                    Console.WriteLine($"Name: {faculty.Name}");
+                    Console.WriteLine($"Department: {faculty.Department?.D_name}");
+                    Console.WriteLine($"Salary: {faculty.Salary:C}");
+                    Console.WriteLine("Subjects: " + (faculty.Subjects != null && faculty.Subjects.Any() ? string.Join(", ", faculty.Subjects.Select(s => s.Subject_name)) : "None"));
+                    Console.WriteLine("Courses: " + (faculty.Courses != null && faculty.Courses.Any() ? string.Join(", ", faculty.Courses.Select(c => c.Course_name)) : "None"));
+                    Console.WriteLine(new string('-', 40));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred while retrieving faculty members by department: {ex.Message}");
             }
         }
 
