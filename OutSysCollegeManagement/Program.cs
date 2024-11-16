@@ -99,7 +99,7 @@ namespace OutSysCollegeManagement
                             await AddCourse(courseRepository);
                             break;
                         case "4":
-                            //await UpdateCourse();
+                            await UpdateCourse(courseRepository);
                             break;
                         case "5":
                             //await DeleteCourse();
@@ -188,7 +188,7 @@ namespace OutSysCollegeManagement
                 Console.WriteLine($"Error fetching course: {ex.Message}");
             }
         }
-        private static async Task AddCourse(CourseRepository courseRepository)
+        public static async Task AddCourse(CourseRepository courseRepository)
         {
             try
             {
@@ -209,6 +209,42 @@ namespace OutSysCollegeManagement
             catch (Exception ex)
             {
                 Console.WriteLine($"Error adding course: {ex.Message}");
+            }
+        }
+        public static async Task UpdateCourse(CourseRepository courseRepository)
+        {
+            try
+            {
+                Console.Write("Enter the Course ID to update: ");
+                if (int.TryParse(Console.ReadLine(), out int courseId))
+                {
+                    var existingCourse = await courseRepository.GetCourseById(courseId);
+                    if (existingCourse != null)
+                    {
+                        Console.Write("Enter New Course Name (leave blank to keep current): ");
+                        var name = Console.ReadLine();
+                        Console.Write("Enter New Course Duration (in months, leave blank to keep current): ");
+                        var durationInput = Console.ReadLine();
+
+                        if (!string.IsNullOrWhiteSpace(name)) existingCourse.Course_name = name;
+                        if (int.TryParse(durationInput, out int duration)) existingCourse.Duration = duration;
+
+                        await courseRepository.UpdateCourse(existingCourse);
+                        Console.WriteLine("Course updated successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Course not found.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a valid Course ID.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating course: {ex.Message}");
             }
         }
 
