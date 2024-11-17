@@ -84,5 +84,13 @@ namespace OutSysCollegeManagement.Repositories
             return await _context.Hostels
                 .CountAsync(h => h.No_of_seats > h.Students.Count);
         }
+        public async Task<List<Student>> GetStudentsInHostel(int hostelId)
+        {
+            // Use the Hostel navigation property to load students for the specified hostel.
+            return await _context.Students
+                                 .Where(student => student.Hostel_id == hostelId)
+                                 .ToListAsync();
+        }
+
     }
 }

@@ -1566,7 +1566,7 @@ namespace OutSysCollegeManagement
                     Console.WriteLine("\nStudents in the Hostel:");
                     foreach (var student in students)
                     {
-                        Console.WriteLine($"ID: {student.Student_id}, Name: {student.Student_name}");
+                        Console.WriteLine($"ID: {student.SID}, Name: {student.FName} {student.LName}");
                     }
                 }
                 else
